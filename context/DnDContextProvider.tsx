@@ -1,32 +1,29 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { createContext, useState } from 'react';
 
-export type TaskStoreContextType = {
-  cards: TaskItemType[];
-  setTaskList: React.Dispatch<React.SetStateAction<TaskItemType[]>>;
-  localStorageTaskStore: { get: () => TaskItemType[]; set: (taskList: TaskItemType[]) => void };
+export type DraggableItemType = {
+  id: string;
+  column_id: string;
+  title: string;
+};
+
+export type DnDContextType = {
+  cards: DraggableItemType[];
+  setCards: React.Dispatch<React.SetStateAction<DraggableItemType[]>>;
 };
 
 // set empty initial values of context
-export const TaskStoreContext = createContext<TaskStoreContextType>({
-  taskList: [],
-  setTaskList: () => {},
-  localStorageTaskStore: { get: () => [], set() {} },
+export const DnDContext = createContext<DnDContextType>({
+  cards: [],
+  setCards: () => {},
 });
 
-export type TaskStoreProviderType = {
+export type DnDProviderType = {
   children: React.ReactNode;
 };
 
-export function TaskStoreProvider({ children }: TaskStoreProviderType) {
-  const { set, get } = createLocalStorageStore<TaskItemType[]>();
-  const [taskList, setTaskList] = useState(get(TASKS_STORAGE_KEY) || []);
-
-  const localStorageTaskStore = {
-    get: () => get(TASKS_STORAGE_KEY) || [],
-    set: (taskList: TaskItemType[]) => set(TASKS_STORAGE_KEY, taskList),
-  };
-
-  const value = { taskList, setTaskList, localStorageTaskStore };
-  return <TaskStoreContext.Provider value={value}>{children}</TaskStoreContext.Provider>;
+export function DnDProvider({ children }: DnDProviderType) {
+  const [cards, setCards] = useState<DraggableItemType[]>([]);
+  const value = { cards, setCards };
+  return <DnDContext.Provider value={value}>{children}</DnDContext.Provider>;
 }
