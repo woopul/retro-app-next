@@ -36,13 +36,13 @@ export const DropZone = ({
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setActive(true);
-    console.log('dragEnter', e);
+    // console.log('dragEnter', e);
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setActive(false);
-    console.log('dragLeave', e);
+    // console.log('dragLeave', e);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
