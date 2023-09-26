@@ -109,13 +109,11 @@ export const Draggable = ({ id }: DraggableProps) => {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      // onDrop={(e) => {
-      //   e.preventDefault();
-      //   console.log('drop', { data: e.dataTransfer.getData('text/plain') });
-      // }}
       onInput={(e) => setContent(e.currentTarget.textContent || '')}
       ref={ref}
     >
+      {/* Expandable field to signal where to drop a card*/}
+      <div className={cn(isDraggingOver && 'tranition-all pt-20 duration-500 ease-in-out')}></div>
       <div
         className={cn(
           'min-h-20 flex w-full max-w-xs flex-col justify-center gap-2 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20',
