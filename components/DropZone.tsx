@@ -1,5 +1,5 @@
 import { DraggableItemType } from '@/context/DnDContextProvider';
-import { useDragAndDrop } from '@/hooks/useDnD';
+import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { cn } from '@/utils/cn';
 import { useState } from 'react';
 import { AddButton } from './AddButton';
@@ -8,18 +8,18 @@ import { Draggable } from './Draggable';
 export type DropZoneProps = {
   column_id: string;
   className?: string;
-  items: { id: string; column_id: string }[];
+  items: DraggableItemType[];
 };
 
 export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   const [active, setActive] = useState(false);
-  const { addCard, updateCard } = useDragAndDrop();
+  const { addCard, updateCardColumn } = useDragAndDrop();
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     setActive(false);
     e.preventDefault();
     const droppedItemId = e.dataTransfer.getData('text/plain');
-    updateCard({ id: droppedItemId, column_id, title: 'moved' });
+    updateCardColumn({ id: droppedItemId, newColumn_id: column_id });
     console.log('drop', { data: e.dataTransfer.getData('text/plain') });
   };
 
@@ -58,8 +58,8 @@ export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      {items.map(({ id }) => (
-        <Draggable key={id} id={id} />
+      {items.map((cardItem) => (
+        <Draggable key={cardItem.id} {...cardItem} />
       ))}
       <AddButton onClick={handleAddCard} className="sticky bottom-5 mt-auto" />
     </div>

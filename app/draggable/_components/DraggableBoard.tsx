@@ -2,7 +2,7 @@
 
 import { BackgroundLight } from '@/components/BackgroundLight';
 import { DropZone } from '@/components/DropZone';
-import { useDragAndDrop } from '@/hooks/useDnD';
+import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { useState } from 'react';
 
 export default function DraggableBoard() {

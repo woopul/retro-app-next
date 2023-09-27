@@ -1,17 +1,12 @@
 'use client';
 
 import { DnDProvider } from '@/context/DnDContextProvider';
-import { useDragAndDrop } from '@/hooks/useDnD';
+import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import Head from 'next/head';
 import { useState } from 'react';
 import DraggableBoard from './_components/DraggableBoard';
 
 export default function DnD() {
-  const [dropZones, setDropZones] = useState([{ id: 'dz_1' }, { id: 'dz_2' }, { id: 'dz_3' }]);
-  const { cards } = useDragAndDrop();
-
-  console.log('cards', cards);
-
   return (
     <>
       <Head>
