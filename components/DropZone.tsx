@@ -1,35 +1,25 @@
+import { DraggableItemType } from '@/context/DnDContextProvider';
+import { useDragAndDrop } from '@/hooks/useDnD';
 import { cn } from '@/utils/cn';
 import { useState } from 'react';
 import { AddButton } from './AddButton';
 import { Draggable } from './Draggable';
 
-export type DraggableItemType = {
-  id: string;
-  dz_id: string;
-};
-
 export type DropZoneProps = {
-  id: string;
+  column_id: string;
   className?: string;
-  items: { id: string; dz_id: string }[];
-  addDraggable: () => void;
-  updateDraggable: (item: DraggableItemType) => void;
+  items: { id: string; column_id: string }[];
 };
 
-export const DropZone = ({
-  addDraggable,
-  updateDraggable,
-  className,
-  id: dz_id,
-  items,
-}: DropZoneProps) => {
+export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   const [active, setActive] = useState(false);
+  const { addCard, updateCard } = useDragAndDrop();
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     setActive(false);
     e.preventDefault();
     const droppedItemId = e.dataTransfer.getData('text/plain');
-    updateDraggable({ id: droppedItemId, dz_id });
+    updateCard({ id: droppedItemId, column_id, title: 'moved' });
     console.log('drop', { data: e.dataTransfer.getData('text/plain') });
   };
 
@@ -50,9 +40,11 @@ export const DropZone = ({
     // console.log('dragOver', e);
   };
 
+  const handleAddCard = () => addCard({ column_id, title: 'Drag And Drop this(you can edit)' });
+
   return (
     <div
-      id={dz_id}
+      id={column_id}
       className={cn(
         'relative flex h-full flex-col items-center gap-2 bg-white/5',
         active && 'bg-white/10',
@@ -69,7 +61,7 @@ export const DropZone = ({
       {items.map(({ id }) => (
         <Draggable key={id} id={id} />
       ))}
-      <AddButton onClick={addDraggable} className="sticky bottom-5 mt-auto" />
+      <AddButton onClick={handleAddCard} className="sticky bottom-5 mt-auto" />
     </div>
   );
 };
