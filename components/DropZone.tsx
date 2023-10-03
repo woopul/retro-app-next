@@ -1,4 +1,4 @@
-import { DraggableItemType } from '@/context/DnDContextProvider';
+import { DraggableItemType } from '@/context/DnDProvider';
 import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { cn } from '@/utils/cn';
 import { useState } from 'react';

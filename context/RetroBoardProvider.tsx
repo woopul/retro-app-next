@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { MutableRefObject, createContext, createRef, useRef, useState } from 'react';
+import { createContext, useState } from 'react';
 
 export type CardItemType = {
   id: string;

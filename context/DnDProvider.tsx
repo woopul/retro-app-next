@@ -1,23 +1,17 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { MutableRefObject, createContext, createRef, useRef, useState } from 'react';
 
-export type DraggableItemType = {
-  id: string;
-  column_id: string;
-  title: string;
-};
-
 export type DnDContextType = {
   draggedOverIdRef: MutableRefObject<string | null>;
-  cards: DraggableItemType[];
-  setCards: React.Dispatch<React.SetStateAction<DraggableItemType[]>>;
+  isDragging: boolean;
+  setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // set empty initial values of context
 export const DnDContext = createContext<DnDContextType>({
   draggedOverIdRef: createRef(),
-  cards: [],
-  setCards: () => {},
+  isDragging: false,
+  setIsDragging: () => {},
 });
 
 export type DnDProviderType = {
@@ -25,8 +19,9 @@ export type DnDProviderType = {
 };
 
 export function DnDProvider({ children }: DnDProviderType) {
-  const [cards, setCards] = useState<DraggableItemType[]>([]);
   const draggedOverIdRef = useRef<string | null>(null);
-  const value = { cards, setCards, draggedOverIdRef };
+  const [isDragging, setIsDragging] = useState(false);
+
+  const value = { isDragging, setIsDragging, draggedOverIdRef };
   return <DnDContext.Provider value={value}>{children}</DnDContext.Provider>;
 }

@@ -1,4 +1,4 @@
-import { DnDContext } from '@/context/DnDContextProvider';
+import { DnDContext } from '@/context/DnDProvider';
 import { useContext } from 'react';
 
 export function useDnDContext() {

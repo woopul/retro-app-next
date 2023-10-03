@@ -1,14 +1,14 @@
-import { DnDContext, DraggableItemType } from '@/context/DnDContextProvider';
+import { CardItemType, RetroBoardContext } from '@/context/RetroBoardProvider';
 import { useContext } from 'react';
 
 export function useDragAndDrop() {
-  const { cards, setCards, draggedOverIdRef } = useContext(DnDContext);
+  const { cards, setCards } = useContext(RetroBoardContext);
 
-  const addCard = ({ column_id, title }: Pick<DraggableItemType, 'column_id' | 'title'>) => {
+  const addCard = ({ column_id, title }: Pick<CardItemType, 'column_id' | 'title'>) => {
     setCards([...cards, { column_id, title, id: `d_${cards.length + 1}` }]);
   };
 
-  const updateCard = (updatedItem: DraggableItemType) => {
+  const updateCard = (updatedItem: CardItemType) => {
     const updatedDraggables = [...cards].map((item) =>
       item.id === updatedItem.id ? updatedItem : item,
     );
@@ -33,17 +33,17 @@ export function useDragAndDrop() {
     updateCard({ ...matchingItem, column_id: newColumn_id });
   };
 
-  const setCurrentDragOverId = (id: string) => {
-    draggedOverIdRef.current = id;
-  };
+  // const setCurrentDragOverId = (id: string) => {
+  //   draggedOverIdRef.current = id;
+  // };
 
-  const resetCurrentDragOverId = () => (draggedOverIdRef.current = null);
+  // const resetCurrentDragOverId = () => (draggedOverIdRef.current = null);
 
   return {
     addCard,
     cards,
-    resetCurrentDragOverId,
-    setCurrentDragOverId,
+    // resetCurrentDragOverId,
+    // setCurrentDragOverId,
     updateCardColumn,
     updateCardTitle,
     updateCard,

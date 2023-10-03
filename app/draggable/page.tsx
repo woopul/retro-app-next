@@ -1,6 +1,7 @@
 'use client';
 
-import { DnDProvider } from '@/context/DnDContextProvider';
+import { DnDProvider } from '@/context/DnDProvider';
+import { RetroBoardProvider } from '@/context/RetroBoardProvider';
 import Head from 'next/head';
 import DraggableBoard from './_components/DraggableBoard';
 
@@ -13,7 +14,9 @@ export default function DnD() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DnDProvider>
-        <DraggableBoard />
+        <RetroBoardProvider>
+          <DraggableBoard />
+        </RetroBoardProvider>
       </DnDProvider>
     </>
   );
