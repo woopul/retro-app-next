@@ -1,7 +1,7 @@
 import { CardItemType, RetroBoardContext } from '@/context/RetroBoardProvider';
 import { useContext } from 'react';
 
-export function useDragAndDrop() {
+export function useRetroBoard() {
   const { cards, setCards } = useContext(RetroBoardContext);
 
   const addCard = ({ column_id, title }: Pick<CardItemType, 'column_id' | 'title'>) => {

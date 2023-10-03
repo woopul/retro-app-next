@@ -2,7 +2,7 @@
 
 import { BackgroundLight } from '@/components/BackgroundLight';
 import { DropZone } from '@/components/DropZone';
-import { useDragAndDrop } from '@/hooks/useDragAndDrop';
+import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { useState } from 'react';
 
 export default function DraggableBoard() {
@@ -11,7 +11,7 @@ export default function DraggableBoard() {
     { column_id: 'dz_2' },
     { column_id: 'dz_3' },
   ]);
-  const { cards } = useDragAndDrop();
+  const { cards } = useRetroBoard();
 
   return (
     <main className="flex min-h-screen flex-col items-center ">

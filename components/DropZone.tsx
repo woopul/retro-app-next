@@ -1,5 +1,5 @@
-import { DraggableItemType } from '@/context/DnDProvider';
-import { useDragAndDrop } from '@/hooks/useDragAndDrop';
+import { CardItemType } from '@/context/RetroBoardProvider';
+import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { cn } from '@/utils/cn';
 import { useState } from 'react';
 import { AddButton } from './AddButton';
@@ -8,12 +8,12 @@ import { Draggable } from './Draggable';
 export type DropZoneProps = {
   column_id: string;
   className?: string;
-  items: DraggableItemType[];
+  items: CardItemType[];
 };
 
 export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   const [active, setActive] = useState(false);
-  const { addCard, updateCardColumn } = useDragAndDrop();
+  const { addCard, updateCardColumn } = useRetroBoard();
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     setActive(false);
