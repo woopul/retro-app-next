@@ -2,18 +2,33 @@ import { DraggableItemType } from '@/context/DnDContextProvider';
 import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { cn } from '@/utils/cn';
 import { useEffect, useRef, useState } from 'react';
-import { set } from 'zod';
 import { ContentEditable } from './ContentEditable';
+
+const isDragOverElementStarted = (ref, e) => ref.current === e.target;
+const isDragOverElementFinished = (ref, e) => !ref.current.contains(e.relatedTarget);
 
 export const Draggable = ({ id, title }: DraggableItemType) => {
   const [content, setContent] = useState(title);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const { updateCardTitle } = useDragAndDrop();
-  const ref = useRef<HTMLDivElement>(null);
+  const [isDraggingOverCard, setIsDraggingOverCard] = useState(false);
+  const [isDraggingOverSpace, setIsDraggingOverSpace] = useState(false);
+  const { updateCardTitle, setCurrentDragOverId, resetCurrentDragOverId } = useDragAndDrop();
+  const cardContainerRef = useRef<HTMLDivElement>(null);
+  const spaceAboveCardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setContent(title);
   }, [title]);
+
+  useEffect(() => {
+    console.log({ id, isDraggingOver });
+    if (isDraggingOver) {
+      setCurrentDragOverId(id);
+      return;
+    }
+    resetCurrentDragOverId();
+  }, [isDraggingOver]);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('text/plain', id);
@@ -28,6 +43,8 @@ export const Draggable = ({ id, title }: DraggableItemType) => {
     });
     e.preventDefault();
     setIsDraggingOver(true);
+    setIsDraggingOverCard(isDragOverElementStarted(cardRef, e));
+    setIsDraggingOverSpace(isDragOverElementStarted(spaceAboveCardRef, e));
   };
 
   const handleDragLeave = (e) => {
@@ -35,14 +52,13 @@ export const Draggable = ({ id, title }: DraggableItemType) => {
       id,
       target: e.target,
       relatedTarget: e.relatedTarget,
-      current: ref.current,
+      current: cardContainerRef.current,
     });
     e.preventDefault();
-    const target = e.target;
-    const relatedTarget = e.relatedTarget;
+    const { relatedTarget, target } = e;
 
     // Check if the related target is not a descendant of the card
-    if (!ref.current?.contains(relatedTarget)) {
+    if (!cardContainerRef.current?.contains(relatedTarget)) {
       setIsDraggingOver(false);
     }
   };
@@ -64,17 +80,23 @@ export const Draggable = ({ id, title }: DraggableItemType) => {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      ref={ref}
+      ref={cardContainerRef}
       className="w-full"
     >
       <div
-        className={cn('tranition-all pt-0 duration-500 ease-in-out', isDraggingOver && 'pt-20')}
+        className={cn(
+          'tranition-all pt-0 duration-300 ease-in-out',
+          isDraggingOver && 'border border-dashed border-orange-200 pt-20',
+          isDraggingOverSpace && 'bg-green-500/30',
+        )}
+        ref={spaceAboveCardRef}
       ></div>
       <div
         className={cn(
           'min-h-20 flex w-full max-w-xs flex-col justify-center gap-2 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20',
-          isDraggingOver && 'bg-green-500/30 transition-all duration-300 ease-in-out',
+          isDraggingOverCard && 'bg-green-500/30 transition-all duration-300 ease-in-out',
         )}
+        ref={cardRef}
       >
         <ContentEditable
           onChange={(newTitle) => updateCardTitle({ id, newTitle })}

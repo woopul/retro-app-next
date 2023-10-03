@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { createContext, useState } from 'react';
+import { MutableRefObject, createContext, createRef, useRef, useState } from 'react';
 
 export type DraggableItemType = {
   id: string;
@@ -8,12 +8,14 @@ export type DraggableItemType = {
 };
 
 export type DnDContextType = {
+  draggedOverIdRef: MutableRefObject<string | null>;
   cards: DraggableItemType[];
   setCards: React.Dispatch<React.SetStateAction<DraggableItemType[]>>;
 };
 
 // set empty initial values of context
 export const DnDContext = createContext<DnDContextType>({
+  draggedOverIdRef: createRef(),
   cards: [],
   setCards: () => {},
 });
@@ -24,6 +26,7 @@ export type DnDProviderType = {
 
 export function DnDProvider({ children }: DnDProviderType) {
   const [cards, setCards] = useState<DraggableItemType[]>([]);
-  const value = { cards, setCards };
+  const draggedOverIdRef = useRef<string | null>(null);
+  const value = { cards, setCards, draggedOverIdRef };
   return <DnDContext.Provider value={value}>{children}</DnDContext.Provider>;
 }

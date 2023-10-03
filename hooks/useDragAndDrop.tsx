@@ -2,7 +2,7 @@ import { DnDContext, DraggableItemType } from '@/context/DnDContextProvider';
 import { useContext } from 'react';
 
 export function useDragAndDrop() {
-  const { cards, setCards } = useContext(DnDContext);
+  const { cards, setCards, draggedOverIdRef } = useContext(DnDContext);
 
   const addCard = ({ column_id, title }: Pick<DraggableItemType, 'column_id' | 'title'>) => {
     setCards([...cards, { column_id, title, id: `d_${cards.length + 1}` }]);
@@ -33,5 +33,19 @@ export function useDragAndDrop() {
     updateCard({ ...matchingItem, column_id: newColumn_id });
   };
 
-  return { addCard, updateCardColumn, updateCardTitle, updateCard, cards };
+  const setCurrentDragOverId = (id: string) => {
+    draggedOverIdRef.current = id;
+  };
+
+  const resetCurrentDragOverId = () => (draggedOverIdRef.current = null);
+
+  return {
+    addCard,
+    cards,
+    resetCurrentDragOverId,
+    setCurrentDragOverId,
+    updateCardColumn,
+    updateCardTitle,
+    updateCard,
+  };
 }

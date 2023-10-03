@@ -1,9 +1,7 @@
 'use client';
 
 import { DnDProvider } from '@/context/DnDContextProvider';
-import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import Head from 'next/head';
-import { useState } from 'react';
 import DraggableBoard from './_components/DraggableBoard';
 
 export default function DnD() {
