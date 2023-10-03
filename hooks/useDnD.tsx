@@ -4,13 +4,18 @@ import { useContext, useState } from 'react';
 const isDragOverElementStarted = (ref, e) => ref.current === e.target;
 const isDragOverElementFinished = (ref, e) => !ref.current.contains(e.relatedTarget);
 
-export function useDnD({ ref }) {
+type UseDnDType = {
+  ref: React.MutableRefObject<HTMLDivElement>;
+  dataTransfer?: string;
+};
+
+export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
   const { setIsDragging } = useContext(DnDContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     setIsDragging(true);
-    // e.dataTransfer.setData('text/plain', id);
+    e.dataTransfer.setData('text/plain', dataTransfer);
     console.log('dragStart', e);
   };
 

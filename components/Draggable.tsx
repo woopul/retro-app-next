@@ -2,7 +2,7 @@ import { CardItemType } from '@/context/RetroBoardProvider';
 import { useDnD } from '@/hooks/useDnD';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { cn } from '@/utils/cn';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ContentEditable } from './ContentEditable';
 
 export const Draggable = ({ id, title }: CardItemType) => {
@@ -11,9 +11,13 @@ export const Draggable = ({ id, title }: CardItemType) => {
   const cardContainerRef = useRef<HTMLDivElement>(null);
   const spaceAboveCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const containerDnd = useDnD({ ref: cardContainerRef });
+  const containerDnd = useDnD({ ref: cardContainerRef, dataTransfer: id });
   const spaceDnD = useDnD({ ref: spaceAboveCardRef });
   const cardDnD = useDnD({ ref: cardRef });
+
+  useEffect(() => {
+    setContent(title);
+  }, [title]);
 
   return (
     <div

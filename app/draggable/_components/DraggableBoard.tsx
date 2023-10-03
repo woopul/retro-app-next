@@ -13,6 +13,7 @@ export default function DraggableBoard() {
   ]);
   const { cards } = useRetroBoard();
 
+  console.log({ cards });
   return (
     <main className="flex min-h-screen flex-col items-center ">
       <BackgroundLight />
