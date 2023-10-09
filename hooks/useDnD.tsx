@@ -1,11 +1,13 @@
 import { DnDContext } from '@/context/DnDProvider';
-import { useContext, useState } from 'react';
+import { RefObject, useContext, useState } from 'react';
 
-const isDragOverElementStarted = (ref, e) => ref.current === e.target;
-const isDragOverElementFinished = (ref, e) => !ref.current.contains(e.relatedTarget);
+const isDragOverElementStarted = (ref: RefObject<HTMLElement>, e: React.DragEvent<HTMLElement>) =>
+  ref.current === e.target;
+const isDragOverElementFinished = (ref: RefObject<HTMLElement>, e: React.DragEvent<HTMLElement>) =>
+  !ref.current?.contains(e.relatedTarget as Node);
 
 type UseDnDType = {
-  ref: React.MutableRefObject<HTMLDivElement>;
+  ref: RefObject<HTMLElement>;
   dataTransfer?: string;
 };
 
@@ -13,13 +15,13 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
   const { setIsDragging } = useContext(DnDContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragStart = (e: React.DragEvent<HTMLElement>) => {
     setIsDragging(true);
     e.dataTransfer.setData('text/plain', dataTransfer);
     console.log('dragStart', e);
   };
 
-  const handleDragEnter = (e) => {
+  const handleDragEnter = (e: React.DragEvent<HTMLElement>) => {
     console.log('%cdragEnter', 'background: green', {
       target: e.target,
       relatedTarget: e.relatedTarget,
@@ -28,7 +30,7 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
     setIsDraggingOver(true);
   };
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
     console.log('%cdLeave', 'background: red', {
       target: e.target,
       relatedTarget: e.relatedTarget,
@@ -41,12 +43,12 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
     }
   };
 
-  const handleDragEnd = (e) => {
+  const handleDragEnd = (e: React.DragEvent<HTMLElement>) => {
     setIsDragging(false);
     setIsDraggingOver(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     setIsDragging(false);
     setIsDraggingOver(false); // The dragged card is no longer over this card
