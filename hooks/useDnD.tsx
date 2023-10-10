@@ -12,7 +12,7 @@ type UseDnDType = {
 };
 
 export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
-  const { setIsDragging } = useContext(DnDContext);
+  const { setIsDragging, draggedOverRef, isDragging } = useContext(DnDContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleDragStart = (e: React.DragEvent<HTMLElement>) => {
@@ -28,6 +28,7 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
     });
     e.preventDefault();
     setIsDraggingOver(true);
+    draggedOverRef.current = ref;
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
@@ -52,6 +53,7 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
     e.preventDefault();
     setIsDragging(false);
     setIsDraggingOver(false); // The dragged card is no longer over this card
+    console.log('%cdrop', 'background: blue', { draggedOverRef, isDragging });
   };
 
   const registerDropZone = () => ({

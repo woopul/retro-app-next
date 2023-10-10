@@ -23,7 +23,7 @@ export const ContentEditable: React.FC<ContentEditableProps> = ({ html, onChange
 
   return (
     <h3
-      className="text-xl font-bold"
+      className="balance-text break-words text-xl font-bold"
       ref={contentRef}
       contentEditable={isEditing}
       onBlur={handleBlur}

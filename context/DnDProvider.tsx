@@ -2,14 +2,14 @@
 import { MutableRefObject, createContext, createRef, useRef, useState } from 'react';
 
 export type DnDContextType = {
-  draggedOverIdRef: MutableRefObject<string | null>;
+  draggedOverRef: MutableRefObject<any | null>;
   isDragging: boolean;
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // set empty initial values of context
 export const DnDContext = createContext<DnDContextType>({
-  draggedOverIdRef: createRef(),
+  draggedOverRef: createRef(),
   isDragging: false,
   setIsDragging: () => {},
 });
@@ -19,9 +19,9 @@ export type DnDProviderType = {
 };
 
 export function DnDProvider({ children }: DnDProviderType) {
-  const draggedOverIdRef = useRef<string | null>(null);
+  const draggedOverRef = useRef<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const value = { isDragging, setIsDragging, draggedOverIdRef };
+  const value = { isDragging, setIsDragging, draggedOverRef };
   return <DnDContext.Provider value={value}>{children}</DnDContext.Provider>;
 }

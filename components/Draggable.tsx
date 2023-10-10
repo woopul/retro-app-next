@@ -38,7 +38,7 @@ export const Draggable = ({ id, title }: CardItemType) => {
       ></div>
       <div
         className={cn(
-          'min-h-20 z-10 flex w-full max-w-xs flex-col justify-center gap-2 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20',
+          'min-h-20 z-10 flex w-full max-w-xs flex-col justify-center gap-2 overflow-hidden rounded-xl bg-white/10 p-4 text-white hover:bg-white/20',
           cardDnD.isDraggingOver && 'bg-green-500/30 transition-all duration-300 ease-in-out',
         )}
         {...cardDnD.registerDropZone()}
