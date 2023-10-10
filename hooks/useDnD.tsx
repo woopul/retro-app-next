@@ -12,13 +12,14 @@ type UseDnDType = {
 };
 
 export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
-  const { setIsDragging, draggedOverRef, isDragging } = useContext(DnDContext);
+  const { setIsDragging, draggedOverRef, draggedElementRef, isDragging } = useContext(DnDContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleDragStart = (e: React.DragEvent<HTMLElement>) => {
     setIsDragging(true);
     e.dataTransfer.setData('text/plain', dataTransfer);
     console.log('dragStart', e);
+    draggedElementRef.current = ref.current;
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLElement>) => {
@@ -27,8 +28,8 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
       relatedTarget: e.relatedTarget,
     });
     e.preventDefault();
-    setIsDraggingOver(true);
-    draggedOverRef.current = ref;
+    draggedOverRef.current = ref.current;
+    setIsDraggingOver(draggedOverRef.current !== draggedElementRef.current);
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
@@ -70,6 +71,7 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
 
   return {
     isDraggingOver,
+    draggedOverRef,
     registerDraggable,
     registerDropZone,
   };

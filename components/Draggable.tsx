@@ -1,8 +1,9 @@
+import { DnDContext } from '@/context/DnDProvider';
 import { CardItemType } from '@/context/RetroBoardProvider';
 import { useDnD } from '@/hooks/useDnD';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { cn } from '@/utils/cn';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ContentEditable } from './ContentEditable';
 
 export const Draggable = ({ id, title }: CardItemType) => {
@@ -14,6 +15,7 @@ export const Draggable = ({ id, title }: CardItemType) => {
   const containerDnd = useDnD({ ref: cardContainerRef, dataTransfer: id });
   const spaceDnD = useDnD({ ref: spaceAboveCardRef });
   const cardDnD = useDnD({ ref: cardRef });
+  const { draggedOverRef, draggedElementRef } = useContext(DnDContext);
 
   useEffect(() => {
     setContent(title);
@@ -29,10 +31,12 @@ export const Draggable = ({ id, title }: CardItemType) => {
       <div
         className={cn(
           'tranition-all pt-0 duration-300 ease-in-out',
-          containerDnd.isDraggingOver &&
-            '-mb-1 border border-b-0 border-dashed border-orange-200 pt-20',
+          containerDnd.isDraggingOver && '-mb-1 border border-b-0 border-dashed border-orange-200',
           spaceDnD.isDraggingOver && 'bg-green-500/30',
         )}
+        style={{
+          paddingTop: containerDnd.isDraggingOver ? draggedElementRef.current.clientHeight : 0,
+        }}
         ref={spaceAboveCardRef}
         {...spaceDnD.registerDropZone()}
       ></div>
