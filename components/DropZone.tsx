@@ -1,3 +1,4 @@
+import { DATA_TRANSFER_JSON } from '@/constants/dataTransfer';
 import { DnDContext } from '@/context/DnDProvider';
 import { CardType } from '@/context/RetroBoardProvider';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
@@ -14,14 +15,14 @@ export type DropZoneProps = {
 
 export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   const [active, setActive] = useState(false);
-  const { addCard, updateCardColumn } = useRetroBoard();
+  const { addCard, moveCardToColumn } = useRetroBoard();
   const dndContext = useContext(DnDContext);
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     setActive(false);
     e.preventDefault();
-    const droppedItemId = e.dataTransfer.getData('text/plain');
-    updateCardColumn({ id: droppedItemId, newColumn_id: column_id });
-    console.log('drop', { data: e.dataTransfer.getData('text/plain') });
+    const cardToMove = e.dataTransfer.getData(DATA_TRANSFER_JSON);
+    moveCardToColumn({ card: JSON.parse(cardToMove), newColumnId: column_id });
+    console.log('drop', { data: e.dataTransfer.getData(DATA_TRANSFER_JSON) });
     console.log(dndContext);
   };
 

@@ -70,63 +70,27 @@ export function useRetroBoard() {
     setColumns(updatedBoard);
   };
 
-  // const moveCardToColumn = ({ cardId, newColumnId }: { cardId: string; newColumnId: string }) => {
-  //   const updatedCard = getUpdatedCard(columns, cardId, { column_id: newColumnId });
-  //   const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
-  //     if (currentColumn.id === newColumnId) {
-  //       return [...acc, getColumnWithNewCard(currentColumn, updatedCard)];
-  //     }
-  //     if()
-  //     return [
-  //       ...acc,
-  //       {
-  //         ...currentColumn,
-  //         cards: [...currentColumn.cards, card],
-  //       },
-  //     ];
-  //   }, []);
-  //   setColumns(updatedBoard);
-  // };
+  const moveCardToColumn = ({ card, newColumnId }: { card: CardType; newColumnId: string }) => {
+    const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
+      // add card to new column
+      if (currentColumn.id === newColumnId) {
+        return [...acc, getColumnWithNewCard(currentColumn, { ...card, column_id: newColumnId })];
+      }
+      // remove card from old column
+      if (card.column_id === currentColumn.id) {
+        return [...acc, getColumnWithRemovedCard(currentColumn, card)];
+      }
 
-  // const updateCardColumn = ({
-  //   id,
-  //   newColumn_id,
-  //   draggedOverId,
-  // }: {
-  //   id: string;
-  //   newColumn_id: string;
-  //   draggedOverId?: string;
-  // }) => {
-  //   const matchingItem = cards.find((cardItem) => cardItem.id === id);
-  //   if (!matchingItem) {
-  //     console.error('Error updateCardColumn: Card to update not found');
-  //     return;
-  //   }
-  //   //is dragged over card in same column?
-  //   const updatedItem = { ...matchingItem, column_id: newColumn_id };
-  //   const draggedOverItem = cards.find((cardItem) => cardItem.id === draggedOverId);
-  //   const isInTheSameColumn = draggedOverItem?.column_id === newColumn_id;
-  //   updatedItem.order = isInTheSameColumn
-  //     ? draggedOverItem?.order
-  //     : cards.filter((cardItem) => cardItem.column_id === newColumn_id).length + 1;
-
-  //   const updatedItemList: CardType[] = cards.reduce((acc, item) => {
-  //     if (item.id === updatedItem.id) {
-  //       return [...acc, updatedItem];
-  //     }
-  //     if (item.column_id === newColumn_id && item.order! >= updatedItem.order!) {
-  //       return [...acc, { ...item, order: item.order! + 1 }];
-  //     }
-  //     return [...acc, item];
-  //   }, []);
-
-  //   setColumns(updatedItemList);
-  // };
+      return [...acc, currentColumn];
+    }, []);
+    setColumns(updatedBoard);
+  };
 
   return {
     addCard,
     addColumn,
     columns,
+    moveCardToColumn,
     // resetCurrentDragOverId,
     // setCurrentDragOverId,
     // updateCardColumn,

@@ -1,3 +1,4 @@
+import { DATA_TRANSFER_JSON } from '@/constants/dataTransfer';
 import { DnDContext } from '@/context/DnDProvider';
 import { RefObject, useContext, useState } from 'react';
 
@@ -18,7 +19,7 @@ export function useDnD({ ref, dataTransfer = '', onDrop }: UseDnDType) {
 
   const handleDragStart = (e: React.DragEvent<HTMLElement>) => {
     setIsDragging(true);
-    e.dataTransfer.setData('text/plain', dataTransfer);
+    e.dataTransfer.setData(DATA_TRANSFER_JSON, dataTransfer);
     console.log('dragStart', e);
     draggedElementRef.current = ref.current;
   };
