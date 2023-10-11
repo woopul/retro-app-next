@@ -91,10 +91,6 @@ export function useRetroBoard() {
     addColumn,
     columns,
     moveCardToColumn,
-    // resetCurrentDragOverId,
-    // setCurrentDragOverId,
-    // updateCardColumn,
-    // updateCardTitle,
     updateCard,
   };
 }
