@@ -1,5 +1,5 @@
 import { DnDContext } from '@/context/DnDProvider';
-import { CardItemType } from '@/context/RetroBoardProvider';
+import { CardType } from '@/context/RetroBoardProvider';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { cn } from '@/utils/cn';
 import { useContext, useState } from 'react';
@@ -9,7 +9,7 @@ import { Draggable } from './Draggable';
 export type DropZoneProps = {
   column_id: string;
   className?: string;
-  items: CardItemType[];
+  items: CardType[];
 };
 
 export const DropZone = ({ className, column_id, items }: DropZoneProps) => {

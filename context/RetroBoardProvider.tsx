@@ -1,22 +1,27 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { createContext, useState } from 'react';
 
-export type CardItemType = {
+export type CardType = {
   id: string;
   column_id: string;
   order?: number;
   title: string;
 };
 
+export type ColumnType = {
+  id: string;
+  cards: CardType[];
+};
+
 export type RetroBoardContextType = {
-  cards: CardItemType[];
-  setCards: React.Dispatch<React.SetStateAction<CardItemType[]>>;
+  columns: ColumnType[];
+  setColumns: React.Dispatch<React.SetStateAction<ColumnType[]>>;
 };
 
 // set empty initial values of context
 export const RetroBoardContext = createContext<RetroBoardContextType>({
-  cards: [],
-  setCards: () => {},
+  columns: [],
+  setColumns: () => {},
 });
 
 export type RetroBoardProviderType = {
@@ -24,7 +29,7 @@ export type RetroBoardProviderType = {
 };
 
 export function RetroBoardProvider({ children }: RetroBoardProviderType) {
-  const [cards, setCards] = useState<CardItemType[]>([]);
-  const value = { cards, setCards };
+  const [columns, setColumns] = useState<ColumnType[]>([]);
+  const value = { columns, setColumns };
   return <RetroBoardContext.Provider value={value}>{children}</RetroBoardContext.Provider>;
 }

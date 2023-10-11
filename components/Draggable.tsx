@@ -1,12 +1,12 @@
 import { DnDContext } from '@/context/DnDProvider';
-import { CardItemType } from '@/context/RetroBoardProvider';
+import { CardType } from '@/context/RetroBoardProvider';
 import { useDnD } from '@/hooks/useDnD';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { cn } from '@/utils/cn';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ContentEditable } from './ContentEditable';
 
-export const Draggable = ({ id, title, order }: CardItemType) => {
+export const Draggable = ({ id, title, order }: CardType) => {
   const [content, setContent] = useState(title);
   const { updateCardTitle } = useRetroBoard();
   const cardContainerRef = useRef<HTMLDivElement>(null);

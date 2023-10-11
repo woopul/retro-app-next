@@ -3,17 +3,17 @@
 import { BackgroundLight } from '@/components/BackgroundLight';
 import { DropZone } from '@/components/DropZone';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 
 export default function DraggableBoard() {
-  const [dropZones, setDropZones] = useState([
-    { column_id: 'dz_1' },
-    { column_id: 'dz_2' },
-    { column_id: 'dz_3' },
-  ]);
-  const { cards } = useRetroBoard();
+  const { columns, addColumn } = useRetroBoard();
+  useEffect(() => {
+    addColumn();
+    addColumn();
+    addColumn();
+  }, []);
 
-  console.log('cards', cards);
+  console.log('columns', columns);
   return (
     <main className="flex min-h-screen flex-col items-center ">
       <BackgroundLight />
@@ -24,14 +24,8 @@ export default function DraggableBoard() {
         PoC
       </h1>
       <div className="flex gap-5 pt-16">
-        {dropZones.map(({ column_id: currentItem_id }) => (
-          <DropZone
-            items={cards
-              .filter(({ column_id }) => column_id === currentItem_id)
-              .sort((a, b) => a.order! - b.order!)}
-            className="h-screen w-[300px]"
-            column_id={currentItem_id}
-          />
+        {columns.map(({ cards, id }) => (
+          <DropZone items={cards} className="h-screen w-[300px]" column_id={id} />
         ))}
       </div>
     </main>
