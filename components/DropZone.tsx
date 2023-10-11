@@ -15,7 +15,7 @@ export type DropZoneProps = {
 
 export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   const [active, setActive] = useState(false);
-  const { addCard, moveCardToColumn } = useRetroBoard();
+  const { addCardToColumn, moveCardToColumn } = useRetroBoard();
   const dndContext = useContext(DnDContext);
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     setActive(false);
@@ -44,7 +44,11 @@ export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   };
 
   const handleAddCard = () =>
-    addCard({ column_id, title: 'Drag And Drop this(you can edit)', order: items.length + 1 });
+    addCardToColumn({
+      column_id,
+      title: 'Drag And Drop this(you can edit)',
+      order: items.length + 1,
+    });
 
   return (
     <div

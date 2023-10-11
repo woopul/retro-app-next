@@ -4,48 +4,27 @@ import { useContext } from 'react';
 
 const getColumnWithNewCard = (column: ColumnType, cardToAdd: CardType): ColumnType => ({
   ...column,
-  cards: [...column.cards, cardToAdd],
+  cards: [...column.cards, cardToAdd.id],
 });
 
 const getColumnWithRemovedCard = (column: ColumnType, cardToRemove: CardType): ColumnType => ({
   ...column,
-  cards: column.cards.filter((cardItem) => cardItem.id !== cardToRemove.id),
+  cards: column.cards.filter((cardId) => cardId !== cardToRemove.id),
 });
 
 const getColumnWithUpdatedCard = (column: ColumnType, cardToUpdate: CardType): ColumnType => ({
   ...column,
-  cards: column.cards.map((cardItem) => {
-    if (cardItem.id !== cardToUpdate.id) {
-      return cardItem;
-    }
-    return cardToUpdate;
-  }),
+  cards: column.cards.map((cardId) => (cardId === cardToUpdate.id ? cardToUpdate.id : cardId)),
 });
 
-const getUpdatedCard = (
-  columns: ColumnType[],
-  cardId: string,
-  fieldsToUpdate: Partial<CardType>,
-) => {
-  const updatedCard = columns.reduce((acc, column) => {
-    const cardToUpdate = column.cards.find((card) => card.id === cardId);
-    if (cardToUpdate) {
-      return { ...cardToUpdate, ...fieldsToUpdate };
-    }
-    return acc;
-  }, {} as CardType);
-
-  return updatedCard;
-};
-
 export function useRetroBoard() {
-  const { columns, setColumns } = useContext(RetroBoardContext);
+  const { columns, setColumns, cards, setCards } = useContext(RetroBoardContext);
 
   const addColumn = (id?: string) => {
     setColumns((prev) => [...prev, { id: id || `dz-${prev.length}`, cards: [] }]);
   };
 
-  const addCard = (card: Optional<CardType, 'id'>) => {
+  const addCardToColumn = (card: Optional<CardType, 'id'>) => {
     const newCard = {
       ...card,
       id: `d_${columns.find((column) => column.id === card.column_id)!.cards.length}`,
@@ -87,7 +66,7 @@ export function useRetroBoard() {
   };
 
   return {
-    addCard,
+    addCardToColumn,
     addColumn,
     columns,
     moveCardToColumn,
