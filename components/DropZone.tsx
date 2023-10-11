@@ -1,7 +1,8 @@
+import { DnDContext } from '@/context/DnDProvider';
 import { CardItemType } from '@/context/RetroBoardProvider';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { cn } from '@/utils/cn';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { AddButton } from './AddButton';
 import { Draggable } from './Draggable';
 
@@ -14,13 +15,14 @@ export type DropZoneProps = {
 export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   const [active, setActive] = useState(false);
   const { addCard, updateCardColumn } = useRetroBoard();
-
+  const dndContext = useContext(DnDContext);
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     setActive(false);
     e.preventDefault();
     const droppedItemId = e.dataTransfer.getData('text/plain');
     updateCardColumn({ id: droppedItemId, newColumn_id: column_id });
     console.log('drop', { data: e.dataTransfer.getData('text/plain') });
+    console.log(dndContext);
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -40,7 +42,8 @@ export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
     // console.log('dragOver', e);
   };
 
-  const handleAddCard = () => addCard({ column_id, title: 'Drag And Drop this(you can edit)' });
+  const handleAddCard = () =>
+    addCard({ column_id, title: 'Drag And Drop this(you can edit)', order: items.length + 1 });
 
   return (
     <div

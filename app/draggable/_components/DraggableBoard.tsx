@@ -13,7 +13,7 @@ export default function DraggableBoard() {
   ]);
   const { cards } = useRetroBoard();
 
-  console.log({ cards });
+  console.log('cards', cards);
   return (
     <main className="flex min-h-screen flex-col items-center ">
       <BackgroundLight />
@@ -26,7 +26,9 @@ export default function DraggableBoard() {
       <div className="flex gap-5 pt-16">
         {dropZones.map(({ column_id: currentItem_id }) => (
           <DropZone
-            items={cards.filter(({ column_id }) => column_id === currentItem_id)}
+            items={cards
+              .filter(({ column_id }) => column_id === currentItem_id)
+              .sort((a, b) => a.order! - b.order!)}
             className="h-screen w-[300px]"
             column_id={currentItem_id}
           />

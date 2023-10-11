@@ -6,7 +6,7 @@ import { cn } from '@/utils/cn';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ContentEditable } from './ContentEditable';
 
-export const Draggable = ({ id, title }: CardItemType) => {
+export const Draggable = ({ id, title, order }: CardItemType) => {
   const [content, setContent] = useState(title);
   const { updateCardTitle } = useRetroBoard();
   const cardContainerRef = useRef<HTMLDivElement>(null);
@@ -15,7 +15,7 @@ export const Draggable = ({ id, title }: CardItemType) => {
   const containerDnd = useDnD({ ref: cardContainerRef, dataTransfer: id });
   const spaceDnD = useDnD({ ref: spaceAboveCardRef });
   const cardDnD = useDnD({ ref: cardRef });
-  const { draggedOverRef, draggedElementRef } = useContext(DnDContext);
+  const { draggedElementRef } = useContext(DnDContext);
 
   useEffect(() => {
     setContent(title);
@@ -27,6 +27,7 @@ export const Draggable = ({ id, title }: CardItemType) => {
       {...containerDnd.registerDraggable()}
       ref={cardContainerRef}
       className="w-full"
+      id={id}
     >
       <div
         className={cn(
@@ -52,7 +53,14 @@ export const Draggable = ({ id, title }: CardItemType) => {
           onChange={(newTitle) => updateCardTitle({ id, newTitle })}
           html={content}
         />
-        <h5 draggable={false}>id : {id}</h5>
+        <div>
+          <h5 className="inline" draggable={false}>
+            id : {id}
+          </h5>
+          <h5 className="ml-5 inline" draggable={false}>
+            order : {order}
+          </h5>
+        </div>
       </div>
     </div>
   );

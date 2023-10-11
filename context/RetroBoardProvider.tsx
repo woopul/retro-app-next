@@ -4,6 +4,7 @@ import { createContext, useState } from 'react';
 export type CardItemType = {
   id: string;
   column_id: string;
+  order?: number;
   title: string;
 };
 

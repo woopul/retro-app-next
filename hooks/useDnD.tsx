@@ -9,9 +9,10 @@ const isDragOverElementFinished = (ref: RefObject<HTMLElement>, e: React.DragEve
 type UseDnDType = {
   ref: RefObject<HTMLElement>;
   dataTransfer?: string;
+  onDrop?: (e: React.DragEvent<HTMLElement>) => void;
 };
 
-export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
+export function useDnD({ ref, dataTransfer = '', onDrop }: UseDnDType) {
   const { setIsDragging, draggedOverRef, draggedElementRef, isDragging } = useContext(DnDContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
@@ -54,6 +55,7 @@ export function useDnD({ ref, dataTransfer = '' }: UseDnDType) {
     e.preventDefault();
     setIsDragging(false);
     setIsDraggingOver(false); // The dragged card is no longer over this card
+    onDrop?.(e);
     console.log('%cdrop', 'background: blue', { draggedOverRef, isDragging });
   };
 
