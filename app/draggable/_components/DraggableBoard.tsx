@@ -3,7 +3,7 @@
 import { BackgroundLight } from '@/components/BackgroundLight';
 import { DropZone } from '@/components/DropZone';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
-import { use, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function DraggableBoard() {
   const { columns, addColumn } = useRetroBoard();

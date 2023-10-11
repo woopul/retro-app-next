@@ -6,20 +6,20 @@ import { cn } from '@/utils/cn';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ContentEditable } from './ContentEditable';
 
-export const Draggable = ({ id, title, order }: CardType) => {
-  const [content, setContent] = useState(title);
-  const { updateCardTitle } = useRetroBoard();
+export const Draggable = (card: CardType) => {
+  const [content, setContent] = useState(card.title);
+  const { updateCard } = useRetroBoard();
   const cardContainerRef = useRef<HTMLDivElement>(null);
   const spaceAboveCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const containerDnd = useDnD({ ref: cardContainerRef, dataTransfer: id });
+  const containerDnd = useDnD({ ref: cardContainerRef, dataTransfer: card.id });
   const spaceDnD = useDnD({ ref: spaceAboveCardRef });
   const cardDnD = useDnD({ ref: cardRef });
   const { draggedElementRef } = useContext(DnDContext);
 
   useEffect(() => {
-    setContent(title);
-  }, [title]);
+    setContent(card.title);
+  }, [card.title]);
 
   return (
     <div
@@ -27,7 +27,7 @@ export const Draggable = ({ id, title, order }: CardType) => {
       {...containerDnd.registerDraggable()}
       ref={cardContainerRef}
       className="w-full"
-      id={id}
+      id={card.id}
     >
       <div
         className={cn(
@@ -50,15 +50,15 @@ export const Draggable = ({ id, title, order }: CardType) => {
         ref={cardRef}
       >
         <ContentEditable
-          onChange={(newTitle) => updateCardTitle({ id, newTitle })}
+          onChange={(newTitle) => updateCard({ ...card, title: newTitle })}
           html={content}
         />
         <div>
           <h5 className="inline" draggable={false}>
-            id : {id}
+            id : {card.id}
           </h5>
           <h5 className="ml-5 inline" draggable={false}>
-            order : {order}
+            order : {card.order}
           </h5>
         </div>
       </div>

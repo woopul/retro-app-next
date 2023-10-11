@@ -1,58 +1,91 @@
 import { CardType, ColumnType, RetroBoardContext } from '@/context/RetroBoardProvider';
+import { Optional } from '@/utils/types';
 import { useContext } from 'react';
+
+const getColumnWithNewCard = (column: ColumnType, cardToAdd: CardType): ColumnType => ({
+  ...column,
+  cards: [...column.cards, cardToAdd],
+});
+
+const getColumnWithRemovedCard = (column: ColumnType, cardToRemove: CardType): ColumnType => ({
+  ...column,
+  cards: column.cards.filter((cardItem) => cardItem.id !== cardToRemove.id),
+});
+
+const getColumnWithUpdatedCard = (column: ColumnType, cardToUpdate: CardType): ColumnType => ({
+  ...column,
+  cards: column.cards.map((cardItem) => {
+    if (cardItem.id !== cardToUpdate.id) {
+      return cardItem;
+    }
+    return cardToUpdate;
+  }),
+});
+
+const getUpdatedCard = (
+  columns: ColumnType[],
+  cardId: string,
+  fieldsToUpdate: Partial<CardType>,
+) => {
+  const updatedCard = columns.reduce((acc, column) => {
+    const cardToUpdate = column.cards.find((card) => card.id === cardId);
+    if (cardToUpdate) {
+      return { ...cardToUpdate, ...fieldsToUpdate };
+    }
+    return acc;
+  }, {} as CardType);
+
+  return updatedCard;
+};
 
 export function useRetroBoard() {
   const { columns, setColumns } = useContext(RetroBoardContext);
 
   const addColumn = (id?: string) => {
-    setColumns((prev) => [...prev, { id: id || `dz-${prev.length + 1}`, cards: [] }]);
+    setColumns((prev) => [...prev, { id: id || `dz-${prev.length}`, cards: [] }]);
   };
 
-  const addCard = (card: CardType) => {
+  const addCard = (card: Optional<CardType, 'id'>) => {
+    const newCard = {
+      ...card,
+      id: `d_${columns.find((column) => column.id === card.column_id)!.cards.length}`,
+    };
     const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
       if (currentColumn.id !== card.column_id) {
         return [...acc, currentColumn];
       }
-      return [
-        ...acc,
-        {
-          ...currentColumn,
-          cards: [...currentColumn.cards, card],
-        },
-      ];
+      return [...acc, getColumnWithNewCard(currentColumn, newCard)];
     }, []);
     setColumns(updatedBoard);
   };
 
-  const updateCard = (updatedCard: CardType) => {
+  const updateCard = (card: CardType) => {
     const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
-      if (currentColumn.id !== updatedCard.column_id) {
+      if (currentColumn.id !== card.column_id) {
         return [...acc, currentColumn];
       }
-      return [
-        ...acc,
-        {
-          ...currentColumn,
-          cards: currentColumn.cards.map((card) => {
-            if (card.id !== updatedCard.id) {
-              return card;
-            }
-            return updatedCard;
-          }),
-        },
-      ];
+      return [...acc, getColumnWithUpdatedCard(currentColumn, card)];
     }, []);
 
     setColumns(updatedBoard);
   };
 
-  // const updateCardTitle = ({ id, newTitle: title }: { id: string; newTitle: string }) => {
-  //   const matchingItem = cards.find((cardItem) => cardItem.id === id);
-  //   if (!matchingItem) {
-  //     console.error('Error updateCardTitle: Card to update not found');
-  //     return;
-  //   }
-  //   updateCard({ ...matchingItem, title });
+  // const moveCardToColumn = ({ cardId, newColumnId }: { cardId: string; newColumnId: string }) => {
+  //   const updatedCard = getUpdatedCard(columns, cardId, { column_id: newColumnId });
+  //   const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
+  //     if (currentColumn.id === newColumnId) {
+  //       return [...acc, getColumnWithNewCard(currentColumn, updatedCard)];
+  //     }
+  //     if()
+  //     return [
+  //       ...acc,
+  //       {
+  //         ...currentColumn,
+  //         cards: [...currentColumn.cards, card],
+  //       },
+  //     ];
+  //   }, []);
+  //   setColumns(updatedBoard);
   // };
 
   // const updateCardColumn = ({
