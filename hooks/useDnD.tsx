@@ -11,45 +11,54 @@ type UseDnDType = {
   ref: RefObject<HTMLElement>;
   dataTransfer?: string;
   onDrop?: (e: React.DragEvent<HTMLElement>) => void;
+  name?: string;
 };
 
-export function useDnD({ ref, dataTransfer = '', onDrop }: UseDnDType) {
+const log = (
+  { target, currentTarget, relatedTarget }: React.DragEvent<HTMLElement>,
+  name: string,
+  color: string,
+  additionalData: object = {},
+) =>
+  console.log(`%c${name}`, `background: ${color}`, {
+    ...additionalData,
+    target,
+    currentTarget,
+    relatedTarget,
+  });
+
+export function useDnD({ ref, dataTransfer = '', onDrop, name }: UseDnDType) {
   const { setIsDragging, draggedOverRef, draggedElementRef, isDragging } = useContext(DnDContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   const handleDragStart = (e: React.DragEvent<HTMLElement>) => {
     setIsDragging(true);
     e.dataTransfer.setData(DATA_TRANSFER_JSON, dataTransfer);
-    console.log('dragStart', e);
     draggedElementRef.current = ref.current;
+    log(e, 'Start', 'lightgreen');
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLElement>) => {
-    console.log('%cdragEnter', 'background: green', {
-      target: e.target,
-      relatedTarget: e.relatedTarget,
-    });
     e.preventDefault();
     draggedOverRef.current = ref.current;
     setIsDraggingOver(draggedOverRef.current !== draggedElementRef.current);
+    log(e, 'Enter', 'green');
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
-    console.log('%cdLeave', 'background: red', {
-      target: e.target,
-      relatedTarget: e.relatedTarget,
-      current: ref.current,
-    });
     e.preventDefault();
     // Check if the related target is not a descendant of the card
     if (isDragOverElementFinished(ref, e)) {
+      draggedOverRef.current = null;
       setIsDraggingOver(false);
     }
+    log(e, 'Leave', 'red');
   };
 
   const handleDragEnd = (e: React.DragEvent<HTMLElement>) => {
     setIsDragging(false);
     setIsDraggingOver(false);
+    log(e, 'End', '#000');
   };
 
   const handleDrop = (e: React.DragEvent<HTMLElement>) => {
@@ -57,7 +66,7 @@ export function useDnD({ ref, dataTransfer = '', onDrop }: UseDnDType) {
     setIsDragging(false);
     setIsDraggingOver(false); // The dragged card is no longer over this card
     onDrop?.(e);
-    console.log('%cdrop', 'background: blue', { draggedOverRef, isDragging });
+    log(e, 'Drop', 'blue', { name });
   };
 
   const registerDropZone = () => ({

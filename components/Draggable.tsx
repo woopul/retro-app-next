@@ -12,8 +12,12 @@ export const Draggable = (card: CardType) => {
   const cardContainerRef = useRef<HTMLDivElement>(null);
   const spaceAboveCardRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const containerDnd = useDnD({ ref: cardContainerRef, dataTransfer: JSON.stringify(card) });
-  const spaceDnD = useDnD({ ref: spaceAboveCardRef });
+  const containerDnd = useDnD({
+    ref: cardContainerRef,
+    name: `card-container-${card.id}`,
+    dataTransfer: JSON.stringify(card),
+  });
+  const spaceDnD = useDnD({ ref: spaceAboveCardRef, name: `space-${card.id}` });
   const cardDnD = useDnD({ ref: cardRef });
   const { draggedElementRef } = useContext(DnDContext);
 
