@@ -10,21 +10,22 @@ export type CardType = {
 
 export type ColumnType = {
   id: string;
-  cards: string[];
+  cardItems: string[];
+};
+
+export type BoardType = {
+  cards: CardType[];
+  columns: ColumnType[];
 };
 
 export type RetroBoardContextType = {
-  cards: CardType[];
-  columns: ColumnType[];
-  setColumns: React.Dispatch<React.SetStateAction<ColumnType[]>>;
-  setCards: React.Dispatch<React.SetStateAction<CardType[]>>;
+  board: BoardType;
+  setBoard: React.Dispatch<React.SetStateAction<BoardType>>;
 };
 
 export const RetroBoardContext = createContext<RetroBoardContextType>({
-  cards: [],
-  columns: [],
-  setColumns: () => {},
-  setCards: () => {},
+  board: { cards: [], columns: [] },
+  setBoard: () => ({ cards: [], columns: [] }),
 });
 
 export type RetroBoardProviderType = {
@@ -32,8 +33,7 @@ export type RetroBoardProviderType = {
 };
 
 export function RetroBoardProvider({ children }: RetroBoardProviderType) {
-  const [columns, setColumns] = useState<ColumnType[]>([]);
-  const [cards, setCards] = useState<CardType[]>([]);
-  const value = { columns, setColumns, cards, setCards };
+  const [board, setBoard] = useState<BoardType>({ cards: [], columns: [] });
+  const value = { board, setBoard };
   return <RetroBoardContext.Provider value={value}>{children}</RetroBoardContext.Provider>;
 }

@@ -1,74 +1,80 @@
 import { CardType, ColumnType, RetroBoardContext } from '@/context/RetroBoardProvider';
 import { Optional } from '@/utils/types';
 import { useContext } from 'react';
+import { set } from 'zod';
 
-const getColumnWithNewCard = (column: ColumnType, cardToAdd: CardType): ColumnType => ({
+const getColumnWithNewCard = (column: ColumnType, { id }: CardType): ColumnType => ({
   ...column,
-  cards: [...column.cards, cardToAdd.id],
+  cardItems: [...column.cardItems, id],
 });
 
 const getColumnWithRemovedCard = (column: ColumnType, cardToRemove: CardType): ColumnType => ({
   ...column,
-  cards: column.cards.filter((cardId) => cardId !== cardToRemove.id),
+  cardItems: column.cardItems.filter((cardId) => cardId !== cardToRemove.id),
 });
 
 const getColumnWithUpdatedCard = (column: ColumnType, cardToUpdate: CardType): ColumnType => ({
   ...column,
-  cards: column.cards.map((cardId) => (cardId === cardToUpdate.id ? cardToUpdate.id : cardId)),
+  cardItems: column.cardItems.map((cardId) =>
+    cardId === cardToUpdate.id ? cardToUpdate.id : cardId,
+  ),
 });
 
 export function useRetroBoard() {
-  const { columns, setColumns, cards, setCards } = useContext(RetroBoardContext);
+  const { board, setBoard } = useContext(RetroBoardContext);
+  const { cards, columns } = board;
+
+  const getUpdatedCards = (cardToUpdate: CardType) =>
+    cards.map((item) => (item.id === cardToUpdate.id ? cardToUpdate : item));
 
   const addColumn = (id?: string) => {
-    setColumns((prev) => [...prev, { id: id || `dz-${prev.length}`, cards: [] }]);
+    setBoard((prev) => ({
+      ...prev,
+      columns: [...prev.columns, { id: id || `dz-${prev.columns.length}`, cardItems: [] }],
+    }));
   };
 
-  const addCardToColumn = (card: Optional<CardType, 'id'>) => {
-    const newCard = {
-      ...card,
-      id: `d_${columns.find((column) => column.id === card.column_id)!.cards.length}`,
-    };
-    const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
-      if (currentColumn.id !== card.column_id) {
-        return [...acc, currentColumn];
-      }
-      return [...acc, getColumnWithNewCard(currentColumn, newCard)];
-    }, []);
-    setColumns(updatedBoard);
+  // Can add new card, or move card from another column
+  const addNewCard = (card: Optional<CardType, 'id'>) => {
+    const newCard = { ...card, id: `d_${cards.length}` };
+    const updatedCards = [...cards, newCard];
+    const updatedColumns = columns.map((column) =>
+      column.id === card.column_id ? getColumnWithNewCard(column, newCard) : column,
+    );
+    setBoard({ cards: updatedCards, columns: updatedColumns });
   };
 
   const updateCard = (card: CardType) => {
-    const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
-      if (currentColumn.id !== card.column_id) {
-        return [...acc, currentColumn];
-      }
-      return [...acc, getColumnWithUpdatedCard(currentColumn, card)];
-    }, []);
-
-    setColumns(updatedBoard);
+    const updatedCards = getUpdatedCards(card);
+    setBoard({ cards: updatedCards, columns });
   };
 
-  const moveCardToColumn = ({ card, newColumnId }: { card: CardType; newColumnId: string }) => {
-    const updatedBoard = columns.reduce((acc: ColumnType[], currentColumn) => {
-      // add card to new column
-      if (currentColumn.id === newColumnId) {
-        return [...acc, getColumnWithNewCard(currentColumn, { ...card, column_id: newColumnId })];
-      }
-      // remove card from old column
-      if (card.column_id === currentColumn.id) {
-        return [...acc, getColumnWithRemovedCard(currentColumn, card)];
-      }
-
-      return [...acc, currentColumn];
+  const moveCardToColumn = async ({
+    card,
+    newColumnId,
+  }: {
+    card: CardType;
+    newColumnId: string;
+  }) => {
+    const updatedCards = getUpdatedCards({ ...card, column_id: newColumnId });
+    const updatedColumns = columns.reduce((acc: ColumnType[], { id }) => {
+      return [
+        ...acc,
+        {
+          id,
+          cardItems: cards.filter((item) => item.column_id === id).map((item) => item.id),
+        },
+      ];
     }, []);
-    setColumns(updatedBoard);
+
+    setBoard({ cards: updatedCards, columns: updatedColumns });
   };
 
   return {
-    addCardToColumn,
+    addNewCard,
     addColumn,
     columns,
+    cards,
     moveCardToColumn,
     updateCard,
   };
