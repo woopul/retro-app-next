@@ -3,9 +3,10 @@ import { DnDContext } from '@/context/DnDProvider';
 import { CardType } from '@/context/RetroBoardProvider';
 import { useRetroBoard } from '@/hooks/useRetroBoard';
 import { cn } from '@/utils/cn';
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { AddButton } from './AddButton';
 import { Draggable } from './Draggable';
+import { useDnD } from '@/hooks/useDnD';
 
 export type DropZoneProps = {
   column_id: string;
@@ -17,6 +18,10 @@ export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
   const [active, setActive] = useState(false);
   const { addNewCard, moveCardToColumn } = useRetroBoard();
   const dndContext = useContext(DnDContext);
+
+  const columnRef = useRef<HTMLDivElement>(null);
+  const columnDnd = useDnD({ ref: columnRef, name: `column-${column_id}` });
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     setActive(false);
     e.preventDefault();
@@ -58,13 +63,14 @@ export const DropZone = ({ className, column_id, items }: DropZoneProps) => {
         active && 'bg-white/10',
         className,
       )}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
+      // onDragEnter={handleDragEnter}
+      // onDragLeave={handleDragLeave}
+      // onDrop={handleDrop}
       // ------------------- DROP ZONE BECAUSE OF BELOW ---------------------
       // For an element to become a drop zone or droppable, the element must have both ondragover and ondrop event handler attributes.
       // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#specifying_drop_targets
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
+      // onDragOver={handleDragOver}
+      {...columnDnd.registerDropZone()}
     >
       {items.map((cardItem) => (
         <Draggable key={cardItem.id} {...cardItem} />
